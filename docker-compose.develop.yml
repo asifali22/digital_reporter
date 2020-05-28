@@ -1,0 +1,24 @@
+version: '2'
+services:
+  digital_reporter:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        ENVIRONMENT: "dev"
+    depends_on:
+      - digital_reporter-db
+    ports:
+      - "3000:3000"
+
+
+  digital_reporter-db:
+    image: mysql:5.7.22
+    command: ["--explicit_defaults_for_timestamp=ON"]
+    restart: always
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: feeds_test
+    ports:
+      - "3306:3306"
