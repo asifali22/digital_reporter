@@ -1,5 +1,5 @@
 class SlackNotifier:
-    URL = "https://hooks.slack.com/services/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"
+    URL = "https://hooks.slack.com/services/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"
 
     def send_message_to_slack(self, text):
         from urllib import request, parse

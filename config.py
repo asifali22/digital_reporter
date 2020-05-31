@@ -6,6 +6,7 @@ import json
 
 import requests
 
+from selenium import webdriver
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +35,9 @@ class Config:
                         format=LOG_FORMAT_DEFAULT)
 
     SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
+
+    DRIVER_PATH = os.environ.get("DRIVER_PATH", "/usr/local/bin/chromedriver")
+    driver = webdriver.Chrome(executable_path=DRIVER_PATH)
 
 
 class TestConfig(Config):

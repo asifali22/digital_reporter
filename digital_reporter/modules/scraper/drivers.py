@@ -1,19 +1,14 @@
 from digital_reporter.modules.utilities.designs.singleton import singleton
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from digital_reporter import current_config
 
 
 @singleton
 class ChromeDriverManager(object):
 
     def __init__(self):
-
-        # part of dummy config
-
-        class CurrentConfig:
-            driver = webdriver.Chrome(executable_path="chromedriver_mac64/chromedriver")
-
-        self.driver = CurrentConfig.driver
+        self.driver = current_config.driver
 
     def get_waiter_driver(self, uri):
 

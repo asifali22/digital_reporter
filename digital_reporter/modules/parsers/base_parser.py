@@ -18,7 +18,7 @@ from digital_reporter.modules.scraper.base import Scapper
 from digital_reporter.modules.scraper.models.scraper import dump_to_scraperdb
 from digital_reporter.modules.db.managers.MySQL import MySQLManager
 from digital_reporter.modules.utilities.configurations.configuration_manager import ConfigurationManager
-
+from digital_reporter.modules.notifications.slack import SlackNotifier
 
 class BaseParser(ABC):
 
