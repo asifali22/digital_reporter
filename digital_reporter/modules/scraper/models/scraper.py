@@ -1,16 +1,11 @@
 import typing
 
 from digital_reporter.modules.db.models import Scraper
-from digital_reporter.modules.db.managers.MySQL import MySQLManager
-from digital_reporter.modules.utilities.configurations.configuration_manager import ConfigurationManager
+from config import current_config
 
-if typing.TYPE_CHECKING:
-    from digital_reporter.modules.utilities.configurations.configuration_manager import Configuration
+sqlalchemy_engine = current_config.cron_db_engine
 
-
-def dump_to_scraperdb(data, db_session):
-
-    config: "Configuration" = ConfigurationManager.get_config()
+def dump_to_scraperdb(data, db_session=sqlalchemy_engine):
 
     assert data["headline"] is not None
     f = Scraper(rss_feed_id=data["rss_feed_id"],

@@ -1,15 +1,9 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, BigInteger, DateTime, ForeignKey, VARCHAR, DECIMAL
 import datetime
-from digital_reporter.modules.utilities.configurations.configuration_manager import ConfigurationManager
-from digital_reporter.modules.db.managers.MySQL import MySQLManager
 import sqlalchemy.dialects.mysql as mysql_t
 from sqlalchemy.sql.functions import current_timestamp
 from digital_reporter import db
-
-config = ConfigurationManager.get_config()
-
-Base = declarative_base()
 
 
 class RSSSource(db.Model):
@@ -94,14 +88,3 @@ class Scraper(db.Model):
             'article': self.article,
             'created_at': self.created_at
         }
-
-
-# Remove this as it was causing issues while producing migrations
-# dbManager = MySQLManager(host=config.get_aws_rds_host(),
-#                          pwd=config.get_aws_rds_password(),
-#                          username=config.get_aws_rds_username(),
-#                          port=config.get_aws_rds_port(),
-#                          db_name=config.get_aws_rds_db_name())
-
-# engine = dbManager.get_engine()
-# Base.metadata.create_all(bind=engine)

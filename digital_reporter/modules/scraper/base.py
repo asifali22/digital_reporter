@@ -5,14 +5,9 @@ import os
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from digital_reporter.modules.utilities.configurations.configuration_manager import (
-    ConfigurationConstants,
-    ConfigurationManager)
+
 from selenium.common.exceptions import TimeoutException
 
-
-if typing.TYPE_CHECKING:
-    from digital_reporter.modules.utilities.configurations.configuration_manager import Configuration
 
 
 class Scapper:
@@ -145,11 +140,6 @@ class Scapper:
             date_string = date_string[index:]
             return format_date(formatted_date, date_string)
 
-    def load_config(self, scraper_name: str, filepath: str = "config.ini") -> None:
-        os.environ[ConfigurationConstants.CONFIGURATION_FILE_ENV_VAR] = filepath
-        config: 'Configuration' = ConfigurationManager.get_config()
-        self._config = config.get_scraper_configs().get(scraper_name, None)
-
     def with_rss_uri(self, part_of_uri="?utm_source=rss"):
         index = None
         try:
@@ -167,43 +157,3 @@ class Scapper:
             scraper_name=self.scraper_name,
             uri=self.uri
         )
-
-
-def main():
-    import json
-    from pprint import pprint
-    from selenium import webdriver
-    # from scraper.models.scraper import dump_to_scraperdb
-
-    # dummy config object - will be replaced later with flask configs
-    option = webdriver.ChromeOptions()
-    option.add_argument('--headless')
-
-    # part of dummy
-
-    class current_config:
-        driver = webdriver.Chrome(
-            options=option, executable_path="chromedriver_linux64/chromedriver")
-        # driver = webdriver.Chrome(
-        #     executable_path="chromedriver_linux64/chromedriver")
-
-    # Better to pass single instance of driver inside than loading driver each time
-    uri = "https://www.indiatoday.in/world/story/pakistan-plane-crash-watch-moment-when-pia-flight-crashed-in-karachi-1680875-2020-05-22?utm_source=rss"
-    driver = current_config.driver
-    driver.get(uri)
-    wait_driver = WebDriverWait(driver, 10)
-
-    os.environ[ConfigurationConstants.CONFIGURATION_FILE_ENV_VAR] = "config.ini"
-    config: 'Configuration' = ConfigurationManager.get_config()
-    config = config.get_scraper_configs().get("SCRAPER_INDIA_TODAY", None)
-    scrape = Scapper(
-        uri=uri, config=config, wait_driver=wait_driver, link_id=1)
-    data = scrape.get_data()
-    pprint(data)
-    # with open("results.json", "w") as f:
-    #     json.dump(data, f, ensure_ascii=False, indent=4)
-    # dump_to_scraperdb(data=data)
-
-
-# if __name__ == "__main__":
-#     main()

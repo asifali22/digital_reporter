@@ -5,8 +5,10 @@ import pickle
 import json
 
 import requests
-
 from selenium import webdriver
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +39,16 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
     DRIVER_PATH = os.environ.get("DRIVER_PATH", "/usr/local/bin/chromedriver")
-    driver = webdriver.Chrome(executable_path=DRIVER_PATH)
+
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--window-size=1420,1080')
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(executable_path=DRIVER_PATH, chrome_options=chrome_options)
+
+    engine = create_engine(SQLALCHEMY_DATABASE_URI)
+    cron_db_engine = sessionmaker(bind=engine)()
 
 
 class TestConfig(Config):

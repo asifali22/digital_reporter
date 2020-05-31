@@ -16,8 +16,6 @@ import time
 from digital_reporter.modules.scraper.drivers import ChromeDriverManager
 from digital_reporter.modules.scraper.base import Scapper
 from digital_reporter.modules.scraper.models.scraper import dump_to_scraperdb
-from digital_reporter.modules.db.managers.MySQL import MySQLManager
-from digital_reporter.modules.utilities.configurations.configuration_manager import ConfigurationManager
 from digital_reporter.modules.notifications.slack import SlackNotifier
 
 class BaseParser(ABC):
@@ -112,24 +110,15 @@ class BaseParser(ABC):
         here.
         """
         driver = ChromeDriverManager()
-        config = ConfigurationManager.get_config()
-        mysql_manager = MySQLManager(host=config.get_aws_rds_host(),
-                                     port=config.get_aws_rds_port(),
-                                     username=config.get_aws_rds_username(),
-                                     pwd=config.get_aws_rds_password(),
-                                     db_name=config.get_aws_rds_db_name())
-
-        S = mysql_manager.get_session()
-        s = S()
-
         for source_url, link, link_id in link_config_map:
             try:
                 scrapper_config = self._source_id_scrapper_config_map[source_url]
                 wait_driver = driver.get_waiter_driver(link['link'])
                 scraper = Scapper(uri=link, config=scrapper_config, wait_driver=wait_driver, link_id=link_id)
-                dump_to_scraperdb(data=scraper.get_data(), db_session=s)
+                dump_to_scraperdb(data=scraper.get_data())
             except Exception as e:
                 print("Something went wrong with scraping rss links or dumping them to database.")
+                # add slack notifier
 
 
     @abstractmethod
